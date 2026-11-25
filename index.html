@@ -85,15 +85,24 @@ footer{text-align:center;color:#555;padding:20px}.flash{outline:3px solid #E8B92
 <h2 class="sec-t" id="produits">Nos produits</h2><main id="rail"></main>
 <section class="wrap" id="contact"></section>
 <section class="wrap" id="legalVisible"><div class="card"><h3>📜 Mentions légales</h3><p class="legal"><b>DABSHOP</b> – 48 Rue de Romainville, 75019 Paris.<br>Activité : vente et mise en relation. Prix discutés en privé, aucun paiement en ligne.<br>Vendeurs : publiés après acceptation du propriétaire.<br>© <span id="an"></span> DABSHOP</p></div></section>
-<footer>© <span id="an2"></span> DABSHOP · 📍 <span id="ftAdr"></span><br><a href="#legalVisible" data-act="go" data-id="legalVisible">Mentions légales</a><br>
-<!-- BOUTON RESET : CACHE POUR LES VISITEURS, VISIBLE QUE POUR LE GESTIONNAIRE -->
-<span id="zoneResetFooter" hidden> · <button class="sec" style="padding:6px 10px" data-act="reset">♻️ Remettre à zéro (Gestionnaire)</button></span>
-</footer>
+<footer>© <span id="an2"></span> DABSHOP · 📍 <span id="ftAdr"></span><br><a href="#legalVisible" data-act="go" data-id="legalVisible">Mentions légales</a><br><span id="zoneResetFooter" hidden> · <button class="sec" style="padding:6px 10px" data-act="reset">♻️ Remettre à zéro (Gestionnaire)</button></span></footer>
 <nav class="barreBas" id="dock"></nav><div id="fond" data-act="closecart"></div><aside id="drawer"></aside><div class="ov" id="ov"><div class="box" id="box"></div></div>
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+apiKey: "AIzaSyAq7akRFzS_EChEBY5OzkGraD9TDeYPoMY",
+authDomain: "dabshop-22422.firebaseapp.com",
+projectId: "dabshop-22422",
+storageBucket: "dabshop-22422.firebasestorage.app",
+messagingSenderId: "719144084444",
+appId: "1:719144084444:web:f68b827003215fa230e519"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const DOC_REF = doc(db, "dabshop", "boutique");
 'use strict';
-
-const KEY='dabshop_db_v6_reset_cache';
+const ADMIN_EMAIL='test@test.com',ADMIN_PASS='1234';
 const IC={wa:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`,gm:`<svg viewBox="0 0 48 48"><path fill="#4caf50" d="M45 16.2l-5 2.75-5 4.75V40h7a3 3 0 003-3V16.2z"/><path fill="#1e88e5" d="M3 16.2l3.614 1.71L13 23.7V40H6a3 3 0 01-3-3V16.2z"/><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/></svg>`,sn:`<svg viewBox="0 0 150 150"><path d="M75 28c-24 0-34 17-34 36v14c-5 2-10 2-15 0 0 7 7 10 13 12-2 5-7 10-15 13 3 5 13 7 20 7 2 5 7 7 13 7h36c6 0 11-2 13-7 7 0 17-2 20-7-8-3-13-8-15-13 6-2 13-5 13-12-5 2-10 2-15 0V64c0-19-10-36-34-36z" fill="#fff" stroke="#111" stroke-width="5" transform="translate(0 4)"/></svg>`,ig:`<svg viewBox="0 0 150 150"><rect x="34" y="34" width="82" height="82" rx="24" fill="none" stroke="#fff" stroke-width="9"/><circle cx="75" cy="75" r="19" fill="none" stroke="#fff" stroke-width="9"/><circle cx="101" cy="49" r="6" fill="#fff"/></svg>`,fb:`<svg viewBox="0 0 150 150"><path transform="matrix(0.1276 0 0 -0.1276 55.10 128.00)" d="M342 416H250V0H79V416H17V558H79V574Q79 677 138.0 730.5Q197 784 311 784Q330 784 339 783V638Q290 641 270.0 624.0Q250 607 250 563V558H342Z" fill="#fff"/></svg>`};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -106,8 +115,28 @@ const DEFAULT=()=>({contact:{wa:'',em:'',sn:'',ig:'',fb:'',adr:'48 Rue de Romain
 {id:'p1',nom:'Diffuseur Automatique',prix:10,desc:'Parfum tres class',photo:'',video:'',cat:'Parfum',stock:10,vendeur:'Dabshop',visible:true,ventes:0,achat:'',avis:[{nom:'Karim',note:5,texte:'Tres bon'}]},
 {id:'p2',nom:'Diffuseur de parfum',prix:10,desc:'Parfum coco',photo:'',video:'',cat:'Parfum',stock:10,vendeur:'Dabshop',visible:true,ventes:0,achat:'',avis:[{nom:'Lea',note:4,texte:'J adore'}]}],
 demandes:[]});
-let DB=LS.get(KEY,null);if(!DB||!DB.produits)DB=DEFAULT();
-const save=()=>LS.set(KEY,DB);
+// ===== FIREBASE A LA PLACE DE localStorage POUR DB =====
+let DB=DEFAULT();
+let fbReady=false;
+let saving=false;
+const save=async()=>{
+if(!fbReady) return;
+saving=true;
+try{ await setDoc(DOC_REF, DB); }catch(e){ console.log('Firebase save err',e); toast('Erreur Firebase: '+e.message); }
+saving=false;
+};
+// Ecoute temps reel
+onSnapshot(DOC_REF, async (snap)=>{
+if(snap.exists()){
+const data=snap.data();
+if(data && data.produits){ DB=data; fbReady=true; render(); }
+} else {
+// 1ere fois : cree le doc avec les produits par defaut
+try{ await setDoc(DOC_REF, DB); fbReady=true; render(); }catch(e){ console.log(e); }
+}
+}, (err)=>{ console.log(err); toast('Firebase: active Firestore en mode test'); });
+window.changerStatut=(id,val)=>{const d=DB.demandes.find(x=>x.id===id);if(!d)return;d.statut=val;save();renderDash();toast('Statut : '+val)};
+let isAdmin=false;try{isAdmin=sessionStorage.getItem('dabshop_admin')==='1'}catch(e){}
 let tab='vue',query='',cart=LS.get('dabshop_cart',[]),favs=LS.get('dabshop_favs',[]),cur='',qty=1,tmpPhoto='';
 let camStream=null, camRetour='vendeur', camRetourId='', camFormData={}, camReady=false, camFacing='environment';
 function saveFormData(){const g=id=>{const el=$('#'+id); return el?el.value:''};camFormData={vNom:g('vNom'),vWa:g('vWa'),vProd:g('vProd'),vPrix:g('vPrix'),vMsg:g('vMsg'),fNom:g('fNom'),fPrix:g('fPrix'),fAchat:g('fAchat'),fCat:g('fCat'),fStock:g('fStock'),fDesc:g('fDesc'),fPhotoUrl:g('fPhotoUrl'),fVideo:g('fVideo')};}
@@ -148,7 +177,6 @@ $('#navDesktop').innerHTML=items.map(([id,i,l])=>`<a href="#${id}" data-act="go"
 const d=[['top','🏠','Accueil'],['produits','🛍️','Produits']];if(isAdmin)d.push(['dash','📊','Tableau']);d.push(['contact','💬','Contact'],['legalVisible','📜','Mentions']);
 $('#dock').innerHTML=d.map(([id,i,l])=>`<a href="#${id}" data-act="go" data-id="${id}"><span class="mini">${i}</span>${l}</a>`).join('')+`<button data-act="${isAdmin?'logout':'login'}"><span class="mini">${isAdmin?'🚪':'🔐'}</span>${isAdmin?'Sortir':'Gestion'}</button>`;
 $('#zoneClient').hidden=isAdmin;
-// CORRECTION : Reset visible QUE pour le gestionnaire
 const zr=$('#zoneResetFooter'); if(zr) zr.hidden=!isAdmin;}
 function renderBadges(){$('#nbPanier').textContent=cart.reduce((a,c)=>a+c.q,0)||'';$('#nbFav').textContent=favs.filter(id=>prod(id)).length||''}
 function statutBadge(s){if(s==='discussion')return'<span class="badgeStatut st-discussion">💬 En discussion</span>';if(s==='accepte')return'<span class="badgeStatut st-accepte">✅ Accepte</span>';if(s==='refuse')return'<span class="badgeStatut st-refuse">❌ Refuse</span>';return'<span class="badgeStatut st-attente">⏳ En attente</span>'}
@@ -166,7 +194,6 @@ return `<div class="dem"><div style="display:flex;gap:12px;flex-wrap:wrap"><span
 <button class="sec" data-act="proposer" data-id="${d.id}">💶 Proposer prix avec marge</button>
 <select id="stat-${d.id}" onchange="changerStatut('${d.id}',this.value)" style="padding:11px;border:1.5px solid #ddd;border-radius:10px;font-weight:700"><option value="attente" ${(!d.statut||d.statut==='attente')?'selected':''}>⏳ En attente</option><option value="discussion" ${d.statut==='discussion'?'selected':''}>💬 En discussion</option><option value="accepte" ${d.statut==='accepte'?'selected':''}>✅ Accepte</option><option value="refuse" ${d.statut==='refuse'?'selected':''}>❌ Refuse</option></select></div></div></div>`
 }
-function changerStatut(id,val){const d=DB.demandes.find(x=>x.id===id);if(!d)return;d.statut=val;save();renderDash();toast('Statut : '+val)}
 function renderDash(){const el=$('#dash');el.hidden=!isAdmin;if(!isAdmin)return;
 const P=DB.produits,vis=P.filter(p=>p.visible!==false).length,ventes=P.reduce((a,p)=>a+(p.ventes||0),0);
 const tb=(k,l)=>`<button class="${tab===k?'on':''}" data-act="tab" data-id="${k}">${l}</button>`;
@@ -219,6 +246,8 @@ dq:d=>{const p=prod(cur);if(!p)return;qty=Math.max(1,qty+Number(d));$('#dq').tex
 cq:s=>{const[i,d]=s.split(':').map(Number);cart[i].q+=d;if(cart[i].q<=0)cart.splice(i,1);renderCart()},crm:i=>{cart.splice(Number(i),1);renderCart()},clearcart:()=>{cart=[];renderCart()},
 fav:id=>{favs=isFav(id)?favs.filter(x=>x!==id):favs.concat(id);LS.set('dabshop_favs',favs);render()},
 favs:modalFavs,login:modalLogin,
+dologin:()=>{const e=$('#gEmail').value.trim(),p=$('#gPass').value,er=$('#gErr');er.hidden=false;if(!$('#gNom').value.trim()||!e||!p){er.textContent='Remplis tout';return}if(!$('#gC1').checked||!$('#gC2').checked){er.textContent='Coche les 2';return}if(e!==ADMIN_EMAIL||p!==ADMIN_PASS){er.textContent='Mauvais identifiant';return}isAdmin=true;try{sessionStorage.setItem('dabshop_admin','1')}catch(e){}tab='vue';closeAll();render();setTimeout(()=>go('dash'),150)},
+logout:()=>{isAdmin=false;try{sessionStorage.removeItem('dabshop_admin')}catch(e){}closeAll();render()},
 vendeur:()=>{ tmpPhoto=''; camFormData={}; modalVendeur(); },
 camVendeur:()=>openCamera('vendeur',''),
 camGestionnaire:(id)=>openCamera('gestionnaire',id||cur||''),
@@ -250,42 +279,6 @@ document.addEventListener('error',e=>{const t=e.target;if(!t||t.tagName!=='IMG')
 $('#logo').addEventListener('click',()=>{const l=$('#logo');l.classList.remove('rot');void l.offsetWidth;l.classList.add('rot')});
 $('#an').textContent=$('#an2').textContent=new Date().getFullYear();
 render();
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script>
-const firebaseConfig = {
-apiKey: "AIzaSyAq7akRFzS_EChEBY5OzkGraD9TDeYPoMY",
-authDomain: "dabshop-22422.firebaseapp.com",
-projectId: "dabshop-22422",
-storageBucket: "dabshop-22422.firebasestorage.app",
-messagingSenderId: "719144084444",
-appId: "1:719144084444:web:f68b827003215fa230e519"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-// Remplace l'ancien admin test@test.com
-let isAdmin = false;
-auth.onAuthStateChanged(user => {
-isAdmin = !!user;
-// ici on ré-affiche le dashboard / bouton reset si admin
-const z = document.getElementById('zoneResetFooter');
-if(z) z.hidden = !isAdmin;
-if(window.renderAll) window.renderAll();
-});
-
-async function doLoginFirebase(email, pass){
-try{
-await auth.signInWithEmailAndPassword(email, pass);
-alert('Connecté en gestionnaire 👑');
-}catch(e){
-alert('Mauvais identifiant : ' + e.message);
-}
-}
-async function doLogoutFirebase(){
-await auth.signOut();
-location.reload();
-}
-</script>t>
+</script>
 </body>
 </html>

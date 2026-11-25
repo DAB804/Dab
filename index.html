@@ -90,6 +90,7 @@ footer{text-align:center;color:#555;padding:20px}.flash{outline:3px solid #E8B92
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 const firebaseConfig = {
 apiKey: "AIzaSyAq7akRFzS_EChEBY5OzkGraD9TDeYPoMY",
 authDomain: "dabshop-22422.firebaseapp.com",
@@ -100,9 +101,10 @@ appId: "1:719144084444:web:f68b827003215fa230e519"
 };
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+const ADMIN_EMAIL = 'ouzedabo15@gmail.com';
 const DOC_REF = doc(db, "dabshop", "boutique");
 'use strict';
-const ADMIN_EMAIL='test@test.com',ADMIN_PASS='1234';
 const IC={wa:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`,gm:`<svg viewBox="0 0 48 48"><path fill="#4caf50" d="M45 16.2l-5 2.75-5 4.75V40h7a3 3 0 003-3V16.2z"/><path fill="#1e88e5" d="M3 16.2l3.614 1.71L13 23.7V40H6a3 3 0 01-3-3V16.2z"/><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/></svg>`,sn:`<svg viewBox="0 0 150 150"><path d="M75 28c-24 0-34 17-34 36v14c-5 2-10 2-15 0 0 7 7 10 13 12-2 5-7 10-15 13 3 5 13 7 20 7 2 5 7 7 13 7h36c6 0 11-2 13-7 7 0 17-2 20-7-8-3-13-8-15-13 6-2 13-5 13-12-5 2-10 2-15 0V64c0-19-10-36-34-36z" fill="#fff" stroke="#111" stroke-width="5" transform="translate(0 4)"/></svg>`,ig:`<svg viewBox="0 0 150 150"><rect x="34" y="34" width="82" height="82" rx="24" fill="none" stroke="#fff" stroke-width="9"/><circle cx="75" cy="75" r="19" fill="none" stroke="#fff" stroke-width="9"/><circle cx="101" cy="49" r="6" fill="#fff"/></svg>`,fb:`<svg viewBox="0 0 150 150"><path transform="matrix(0.1276 0 0 -0.1276 55.10 128.00)" d="M342 416H250V0H79V416H17V558H79V574Q79 677 138.0 730.5Q197 784 311 784Q330 784 339 783V638Q290 641 270.0 624.0Q250 607 250 563V558H342Z" fill="#fff"/></svg>`};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -115,7 +117,6 @@ const DEFAULT=()=>({contact:{wa:'',em:'',sn:'',ig:'',fb:'',adr:'48 Rue de Romain
 {id:'p1',nom:'Diffuseur Automatique',prix:10,desc:'Parfum tres class',photo:'',video:'',cat:'Parfum',stock:10,vendeur:'Dabshop',visible:true,ventes:0,achat:'',avis:[{nom:'Karim',note:5,texte:'Tres bon'}]},
 {id:'p2',nom:'Diffuseur de parfum',prix:10,desc:'Parfum coco',photo:'',video:'',cat:'Parfum',stock:10,vendeur:'Dabshop',visible:true,ventes:0,achat:'',avis:[{nom:'Lea',note:4,texte:'J adore'}]}],
 demandes:[]});
-// ===== FIREBASE A LA PLACE DE localStorage POUR DB =====
 let DB=DEFAULT();
 let fbReady=false;
 let saving=false;
@@ -125,18 +126,17 @@ saving=true;
 try{ await setDoc(DOC_REF, DB); }catch(e){ console.log('Firebase save err',e); toast('Erreur Firebase: '+e.message); }
 saving=false;
 };
-// Ecoute temps reel
 onSnapshot(DOC_REF, async (snap)=>{
 if(snap.exists()){
 const data=snap.data();
 if(data && data.produits){ DB=data; fbReady=true; render(); }
 } else {
-// 1ere fois : cree le doc avec les produits par defaut
 try{ await setDoc(DOC_REF, DB); fbReady=true; render(); }catch(e){ console.log(e); }
 }
 }, (err)=>{ console.log(err); toast('Firebase: active Firestore en mode test'); });
 window.changerStatut=(id,val)=>{const d=DB.demandes.find(x=>x.id===id);if(!d)return;d.statut=val;save();renderDash();toast('Statut : '+val)};
-let isAdmin=false;try{isAdmin=sessionStorage.getItem('dabshop_admin')==='1'}catch(e){}
+let isAdmin=false;
+onAuthStateChanged(auth, (user)=>{ isAdmin = !!(user && user.email === ADMIN_EMAIL); render(); });
 let tab='vue',query='',cart=LS.get('dabshop_cart',[]),favs=LS.get('dabshop_favs',[]),cur='',qty=1,tmpPhoto='';
 let camStream=null, camRetour='vendeur', camRetourId='', camFormData={}, camReady=false, camFacing='environment';
 function saveFormData(){const g=id=>{const el=$('#'+id); return el?el.value:''};camFormData={vNom:g('vNom'),vWa:g('vWa'),vProd:g('vProd'),vPrix:g('vPrix'),vMsg:g('vMsg'),fNom:g('fNom'),fPrix:g('fPrix'),fAchat:g('fAchat'),fCat:g('fCat'),fStock:g('fStock'),fDesc:g('fDesc'),fPhotoUrl:g('fPhotoUrl'),fVideo:g('fVideo')};}
@@ -217,7 +217,7 @@ function openModal(h){$('#box').innerHTML=h;$('#ov').classList.add('show')}
 function closeAll(){stopCam();$('#ov').classList.remove('show');closeCart()}
 function modalDetail(id){const p=prod(id);if(!p)return;cur=id;qty=1;const med=p.video?`<video class="pv" src="${esc(p.video)}" controls></video>`:(p.photo?`<img class="pv" src="${esc(p.photo)}" data-ph="1">`:'');
 openModal(`<button class="sec back" data-act="close">⬅️ Retour</button>${med}<h2>${esc(p.nom)}</h2><div class="pr">${eur(p.prix)}</div>${metaTags(p)}<p class="ds">${esc(p.desc)}</p>${out(p)?'<div class="avis">Rupture</div>':`<div class="qtyBox"><b>Quantite</b><div class="qty"><button class="rnd" data-act="dq" data-id="-1">−</button><b id="dq">1</b><button class="rnd" data-act="dq" data-id="1">+</button><span id="dtot">= ${eur(p.prix)}</span></div><button class="gold full" data-act="addq" data-id="${p.id}">🛒 Ajouter</button></div>`}<h3>⭐ Avis</h3><div class="list">${(p.avis||[]).map(a=>`<div class="avis"><b>${esc(a.nom)}</b> ${stars(a.note)}<br><span class="ds">${esc(a.texte)}</span></div>`).join('')||'Pas d avis'}</div><label>Ton nom<input id="aNom"></label><label>Note<select id="aNote"><option value="5">5 - Excellent</option><option value="4">4 - Tres bien</option><option value="3">3 - Moyen</option><option value="2">2 - Pas top</option><option value="1">1 - Decu</option></select></label><label>Ton avis<textarea id="aTexte" rows="2"></textarea></label><button class="gold" data-act="avis" data-id="${p.id}">⭐ Publier</button>`)}
-function modalLogin(){openModal(`<button class="sec back" data-act="close">⬅️ Retour</button><h2>🔐 Gestionnaire</h2><label>Ton nom<input id="gNom"></label><label>E-mail<input id="gEmail" type="email"></label><label>Mot de passe<input id="gPass" type="password"></label><div class="cond"><label><input type="checkbox" id="gC1"> J accepte</label><label><input type="checkbox" id="gC2"> Je suis le proprietaire</label></div><p class="ds" id="gErr" hidden></p><button class="gold" data-act="dologin">🔓 Entrer</button><p class="ds" style="text-align:center">Test : test@test.com / 1234</p>`)}
+function modalLogin(){openModal(`<button class="sec back" data-act="close">⬅️ Retour</button><h2>🔐 Gestionnaire</h2><label>Ton nom<input id="gNom"></label><label>E-mail<input id="gEmail" type="email"></label><label>Mot de passe<input id="gPass" type="password"></label><div class="cond"><label><input type="checkbox" id="gC1"> J accepte</label><label><input type="checkbox" id="gC2"> Je suis le proprietaire</label></div><p class="ds" id="gErr" hidden></p><button class="gold" data-act="dologin">🔓 Entrer</button>`)}
 function modalAjout(id){
 const p=id?prod(id):{nom:'',prix:'',achat:'',cat:'Parfum',desc:'',stock:10,photo:'',video:''};
 if(!tmpPhoto) tmpPhoto=p.photo||'';
@@ -246,8 +246,14 @@ dq:d=>{const p=prod(cur);if(!p)return;qty=Math.max(1,qty+Number(d));$('#dq').tex
 cq:s=>{const[i,d]=s.split(':').map(Number);cart[i].q+=d;if(cart[i].q<=0)cart.splice(i,1);renderCart()},crm:i=>{cart.splice(Number(i),1);renderCart()},clearcart:()=>{cart=[];renderCart()},
 fav:id=>{favs=isFav(id)?favs.filter(x=>x!==id):favs.concat(id);LS.set('dabshop_favs',favs);render()},
 favs:modalFavs,login:modalLogin,
-dologin:()=>{const e=$('#gEmail').value.trim(),p=$('#gPass').value,er=$('#gErr');er.hidden=false;if(!$('#gNom').value.trim()||!e||!p){er.textContent='Remplis tout';return}if(!$('#gC1').checked||!$('#gC2').checked){er.textContent='Coche les 2';return}if(e!==ADMIN_EMAIL||p!==ADMIN_PASS){er.textContent='Mauvais identifiant';return}isAdmin=true;try{sessionStorage.setItem('dabshop_admin','1')}catch(e){}tab='vue';closeAll();render();setTimeout(()=>go('dash'),150)},
-logout:()=>{isAdmin=false;try{sessionStorage.removeItem('dabshop_admin')}catch(e){}closeAll();render()},
+dologin:async ()=>{const e=$('#gEmail').value.trim(),p=$('#gPass').value,er=$('#gErr');er.hidden=false;if(!$('#gNom').value.trim()||!e||!p){er.textContent='Remplis tout';return}if(!$('#gC1').checked||!$('#gC2').checked){er.textContent='Coche les 2';return}
+try{
+const cred = await signInWithEmailAndPassword(auth, e, p);
+if(cred.user.email !== ADMIN_EMAIL){ await signOut(auth); throw new Error('Pas autorise'); }
+tab='vue';closeAll();render();setTimeout(()=>go('dash'),150);
+}catch(err){ er.textContent='Mauvais identifiant'; }
+},
+logout:async ()=>{ try{ await signOut(auth); }catch(e){} isAdmin=false; closeAll(); render(); },
 vendeur:()=>{ tmpPhoto=''; camFormData={}; modalVendeur(); },
 camVendeur:()=>openCamera('vendeur',''),
 camGestionnaire:(id)=>openCamera('gestionnaire',id||cur||''),
